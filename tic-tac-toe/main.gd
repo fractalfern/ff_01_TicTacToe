@@ -7,6 +7,8 @@ const NUM_CELLS: int = 3
 const EMPTY_CELL: int = 0
 const PLAYER_CIRCLE: int = 1
 const PLAYER_CROSS: int = -1
+const CIRCLE_WIN: int = 3
+const CROSS_WIN: int = -3
 
 var board_size: int
 var cell_size: int
@@ -140,33 +142,33 @@ func create_marker(player: int, position: Vector2i) -> Node:
 
 func get_winner() -> int:
 	# Check rows
-	for row: int in range(3):
+	for row: int in grid_data.size():
 		var sum: int = grid_data[row][0] + grid_data[row][1] + grid_data[row][2]
-		if sum == 3:
-			return 1
-		elif sum == -3:
-			return -1
+		if sum == CIRCLE_WIN:
+			return PLAYER_CIRCLE
+		elif sum == CROSS_WIN:
+			return PLAYER_CROSS
 
 	# Check columns
-	for col: int in range(3):
+	for col: int in grid_data.size():
 		var sum: int = grid_data[0][col] + grid_data[1][col] + grid_data[2][col]
-		if sum == 3:
-			return 1
-		elif sum == -3:
-			return -1
+		if sum == CIRCLE_WIN:
+			return PLAYER_CIRCLE
+		elif sum == CROSS_WIN:
+			return PLAYER_CROSS
 
 	# Check diagonals
 	var diag1: int = grid_data[0][0] + grid_data[1][1] + grid_data[2][2]
-	if diag1 == 3:
-		return 1
-	elif diag1 == -3:
-		return -1
+	if diag1 == CIRCLE_WIN:
+		return PLAYER_CIRCLE
+	elif diag1 == CROSS_WIN:
+		return PLAYER_CROSS
 
 	var diag2: int = grid_data[0][2] + grid_data[1][1] + grid_data[2][0]
-	if diag2 == 3:
-		return 1
-	elif diag2 == -3:
-		return -1
+	if diag2 == CIRCLE_WIN:
+		return PLAYER_CIRCLE
+	elif diag2 == CROSS_WIN:
+		return PLAYER_CROSS
 
 	return 0
 
