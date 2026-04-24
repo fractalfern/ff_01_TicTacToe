@@ -1,5 +1,6 @@
 extends Node
 
+const NUM_CELLS: int = 3
 const PLAYER_CIRCLE: int = 1
 const PLAYER_CROSS: int = -1
 const CIRCLE_WIN: int = 3

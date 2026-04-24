@@ -1,18 +1,7 @@
 extends Node
 
-@export var circle_scene : PackedScene
-@export var cross_scene: PackedScene
-
-const NUM_CELLS: int = 3
-
-var board_size: int
-var cell_size: int
-var cell_size_offset: Vector2i
-
 var current_player: int
 var player_marker: Node
-var player_panel_pos: Vector2i
-var player_marker_pos: Vector2i
 var num_moves: int
 
 func new_game() -> void:
@@ -24,24 +13,14 @@ func new_game() -> void:
 	get_tree().call_group("circles", "queue_free")
 	get_tree().call_group("crosses", "queue_free")
 	
-	player_marker = create_marker(current_player, player_marker_pos)
+	player_marker = $GameGraphics.create_marker(current_player, $GameGraphics.player_marker_pos)
+	add_child(player_marker)
 	
 	$GameOverMenu.hide()
 	get_tree().paused = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	board_size = $Board.texture.get_width()
-		
-	@warning_ignore("integer_division")
-	cell_size = board_size/NUM_CELLS
-	
-	@warning_ignore("integer_division")
-	cell_size_offset = Vector2i(cell_size/2, cell_size/2)
-	
-	player_panel_pos = $PlayerPanel.get_screen_position()
-	player_marker_pos = player_panel_pos + cell_size_offset
-	
 	new_game()
 
 func is_mouse_click_left(event: InputEvent) -> bool:
@@ -51,30 +30,14 @@ func is_mouse_click_left(event: InputEvent) -> bool:
 			
 	return false
 
-func is_event_in_board(event: InputEvent) -> bool:
-	if event.position.x < board_size:
-		return true
-	
-	return false
-
-func get_grid_position(mouse_position: Vector2) -> Vector2i:
-	return Vector2i(mouse_position / cell_size)
-
 func next_player() -> void:
 	if current_player == Constants.PLAYER_CROSS:
 		current_player = Constants.PLAYER_CIRCLE
 	else: #player == Constants.PLAYER_CIRCLE
 		current_player = Constants.PLAYER_CROSS
 
-func get_game_marker_position(position: Vector2i) -> Vector2i:
-	@warning_ignore("integer_division")
-	var pos_calc: Vector2i = position * cell_size + cell_size_offset
-	print(pos_calc)
-	
-	return pos_calc
-
 func take_turn(event: InputEvent) -> void:
-	var grid_pos: Vector2i = get_grid_position(event.position)
+	var grid_pos: Vector2i = $GameGraphics.get_grid_position(event.position)
 	
 	var grid_data: Array = $GameLogic.grid_data
 	
@@ -87,12 +50,15 @@ func take_turn(event: InputEvent) -> void:
 		grid_data[grid_pos.y][grid_pos.x] = current_player
 		print(grid_data)
 		
-		create_marker(current_player, get_game_marker_position(grid_pos))
+		var marker: Node = $GameGraphics.create_marker(current_player, $GameGraphics.get_game_marker_position(grid_pos))
+		add_child(marker)
+		
 		next_player()
 		print()
 		
 		player_marker.queue_free()
-		player_marker = create_marker(current_player, player_marker_pos)
+		player_marker = $GameGraphics.create_marker(current_player, $GameGraphics.player_marker_pos)
+		add_child(player_marker)
 		
 		var winner: int = $GameLogic.get_winner()
 		if winner || num_moves == 9:
@@ -110,22 +76,8 @@ func take_turn(event: InputEvent) -> void:
 
 func _input(event: InputEvent) -> void:
 	if is_mouse_click_left(event):
-		if is_event_in_board(event):
+		if $GameGraphics.is_event_in_board(event):
 			take_turn(event)
-
-## Places a marker for the specified player at the specified position
-func create_marker(player: int, position: Vector2i) -> Node:
-	var marker: Node
-	
-	if player == Constants.PLAYER_CIRCLE:
-		marker = circle_scene.instantiate()
-	else: # player == Constants.PLAYER_CROSS
-		marker = cross_scene.instantiate()
-		
-	marker.position = position
-	add_child(marker)
-	
-	return marker
 
 func _on_game_over_menu_restart() -> void:
 	new_game()
