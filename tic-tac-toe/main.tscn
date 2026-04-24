@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://c35bicglh47x0"]
 
-[ext_resource type="Script" uid="uid://d1a5l8d2wpy0m" path="res://main.gd" id="1_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://dypwp6ugej0wl" path="res://board.tscn" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://ge2lnylfhne1" path="res://circle.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://mr882aviyvia" path="res://cross.tscn" id="3_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://c5cs5h88abqqy" path="res://game_over_menu.tscn" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://d1a5l8d2wpy0m" path="res://scripts/main.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dypwp6ugej0wl" path="res://scenes/board.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://ge2lnylfhne1" path="res://scenes/circle.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://mr882aviyvia" path="res://scenes/cross.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://c5cs5h88abqqy" path="res://scenes/game_over_menu.tscn" id="5_lquwl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
 bg_color = Color(0.32225943, 0.65161693, 0.75286984, 1)
