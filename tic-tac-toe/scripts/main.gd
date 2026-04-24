@@ -16,6 +16,8 @@ var player_marker_pos: Vector2i
 var num_moves: int
 
 func new_game() -> void:
+	$GameLogic.new_game()
+	
 	current_player = Constants.PLAYER_CIRCLE
 	num_moves = 0
 	

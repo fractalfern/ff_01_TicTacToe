@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ge2lnylfhne1" path="res://scenes/circle.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://mr882aviyvia" path="res://scenes/cross.tscn" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://bc63145fu6f1m" path="res://scripts/game_logic.gd" id="5_5vw27"]
+[ext_resource type="Script" uid="uid://brwl2hkt8g8ic" path="res://scripts/game_graphics.gd" id="5_272bh"]
 [ext_resource type="PackedScene" uid="uid://c5cs5h88abqqy" path="res://scenes/game_over_menu.tscn" id="5_lquwl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
@@ -32,6 +33,9 @@ cross_scene = ExtResource("3_1bvp3")
 
 [node name="GameLogic" type="Node" parent="." unique_id=1844410900]
 script = ExtResource("5_5vw27")
+
+[node name="GameGraphics" type="Node" parent="." unique_id=1594812293]
+script = ExtResource("5_272bh")
 
 [node name="Board" parent="." unique_id=1398730743 instance=ExtResource("1_ig7tw")]
 position = Vector2(300, 300)
