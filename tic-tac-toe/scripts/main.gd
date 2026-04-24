@@ -4,11 +4,6 @@ extends Node
 @export var cross_scene: PackedScene
 
 const NUM_CELLS: int = 3
-const EMPTY_CELL: int = 0
-const PLAYER_CIRCLE: int = 1
-const PLAYER_CROSS: int = -1
-const CIRCLE_WIN: int = 3
-const CROSS_WIN: int = -3
 
 var board_size: int
 var cell_size: int
@@ -20,17 +15,9 @@ var player_panel_pos: Vector2i
 var player_marker_pos: Vector2i
 var num_moves: int
 
-var grid_data: Array
-
 func new_game() -> void:
-	current_player = PLAYER_CIRCLE
+	current_player = Constants.PLAYER_CIRCLE
 	num_moves = 0
-	
-	grid_data = [
-		[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-		[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL],
-		[EMPTY_CELL, EMPTY_CELL, EMPTY_CELL]
-		]
 	
 	get_tree().call_group("circles", "queue_free")
 	get_tree().call_group("crosses", "queue_free")
@@ -41,7 +28,7 @@ func new_game() -> void:
 	get_tree().paused = false
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:	
+func _ready() -> void:
 	board_size = $Board.texture.get_width()
 		
 	@warning_ignore("integer_division")
@@ -55,31 +42,27 @@ func _ready() -> void:
 	
 	new_game()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-	
 func is_mouse_click_left(event: InputEvent) -> bool:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			return true
 			
 	return false
-	
+
 func is_event_in_board(event: InputEvent) -> bool:
 	if event.position.x < board_size:
 		return true
 	
 	return false
-	
-func get_grid_position(mouse_position: Vector2) -> Vector2i:		
+
+func get_grid_position(mouse_position: Vector2) -> Vector2i:
 	return Vector2i(mouse_position / cell_size)
-		
+
 func next_player() -> void:
-	if current_player == PLAYER_CROSS:
-		current_player = PLAYER_CIRCLE
-	else: #player == PLAYER_CIRCLE
-		current_player = PLAYER_CROSS
+	if current_player == Constants.PLAYER_CROSS:
+		current_player = Constants.PLAYER_CIRCLE
+	else: #player == Constants.PLAYER_CIRCLE
+		current_player = Constants.PLAYER_CROSS
 
 func get_game_marker_position(position: Vector2i) -> Vector2i:
 	@warning_ignore("integer_division")
@@ -91,7 +74,9 @@ func get_game_marker_position(position: Vector2i) -> Vector2i:
 func take_turn(event: InputEvent) -> void:
 	var grid_pos: Vector2i = get_grid_position(event.position)
 	
-	if grid_data[grid_pos.y][grid_pos.x] == EMPTY_CELL:
+	var grid_data: Array = $GameLogic.grid_data
+	
+	if grid_data[grid_pos.y][grid_pos.x] == Constants.EMPTY_CELL:
 		num_moves += 1
 		
 		print(grid_pos)	
@@ -107,70 +92,38 @@ func take_turn(event: InputEvent) -> void:
 		player_marker.queue_free()
 		player_marker = create_marker(current_player, player_marker_pos)
 		
-		var winner: int = get_winner()
+		var winner: int = $GameLogic.get_winner()
 		if winner || num_moves == 9:
 			get_tree().paused = true
 			$GameOverMenu.show()
 			
 			var GameOverLabel: Node = $GameOverMenu.get_node("ResultLabel")
 			
-			if winner == PLAYER_CIRCLE:
+			if winner == Constants.PLAYER_CIRCLE:
 				GameOverLabel.text = "Circle Wins!"
-			elif winner == PLAYER_CROSS:
+			elif winner == Constants.PLAYER_CROSS:
 				GameOverLabel.text = "Cross Wins!"
 			else:
 				GameOverLabel.text = "It's a tie!"
-		
+
 func _input(event: InputEvent) -> void:
 	if is_mouse_click_left(event):
 		if is_event_in_board(event):
 			take_turn(event)
 
 ## Places a marker for the specified player at the specified position
-func create_marker(player: int, position: Vector2i) -> Node:	
+func create_marker(player: int, position: Vector2i) -> Node:
 	var marker: Node
 	
-	if player == PLAYER_CIRCLE:
+	if player == Constants.PLAYER_CIRCLE:
 		marker = circle_scene.instantiate()
-	else: # player == PLAYER_CROSS
+	else: # player == Constants.PLAYER_CROSS
 		marker = cross_scene.instantiate()
 		
 	marker.position = position
 	add_child(marker)
 	
 	return marker
-
-func get_winner() -> int:
-	# Check rows
-	for row: int in grid_data.size():
-		var sum: int = grid_data[row][0] + grid_data[row][1] + grid_data[row][2]
-		if sum == CIRCLE_WIN:
-			return PLAYER_CIRCLE
-		elif sum == CROSS_WIN:
-			return PLAYER_CROSS
-
-	# Check columns
-	for col: int in grid_data.size():
-		var sum: int = grid_data[0][col] + grid_data[1][col] + grid_data[2][col]
-		if sum == CIRCLE_WIN:
-			return PLAYER_CIRCLE
-		elif sum == CROSS_WIN:
-			return PLAYER_CROSS
-
-	# Check diagonals
-	var diag1: int = grid_data[0][0] + grid_data[1][1] + grid_data[2][2]
-	if diag1 == CIRCLE_WIN:
-		return PLAYER_CIRCLE
-	elif diag1 == CROSS_WIN:
-		return PLAYER_CROSS
-
-	var diag2: int = grid_data[0][2] + grid_data[1][1] + grid_data[2][0]
-	if diag2 == CIRCLE_WIN:
-		return PLAYER_CIRCLE
-	elif diag2 == CROSS_WIN:
-		return PLAYER_CROSS
-
-	return 0
 
 func _on_game_over_menu_restart() -> void:
 	new_game()

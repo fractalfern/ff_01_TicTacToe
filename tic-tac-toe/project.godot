@@ -14,6 +14,10 @@ config/name="TicTacToe"
 run/main_scene="uid://c35bicglh47x0"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
+[autoload]
+
+Constants="*uid://uvkqokeljh61"
+
 [debug]
 
 gdscript/warnings/untyped_declaration=2
