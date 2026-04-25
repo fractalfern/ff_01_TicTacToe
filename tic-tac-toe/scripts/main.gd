@@ -8,8 +8,13 @@ var current_player: int
 var player_marker: Node
 var num_moves: int
 
-func new_game() -> void:
+var opponent: int = Constants.OPPONENT_HUMAN
+var is_human_turn: bool = false
+
+func new_game() -> void:	
+	is_human_turn = false
 	gameLogic.new_game()
+	is_human_turn = true
 	
 	current_player = Constants.PLAYER_CIRCLE
 	num_moves = 0
@@ -55,14 +60,7 @@ func end_game(winner: int) -> void:
 	else:
 		GameOverLabel.text = "It's a tie!"
 
-## Implements one turn of the game. This is more complex than I would like
-## Given a user click
-##   - Updates the underlying grid data
-##   - places a marker at the correct screen location and updates current player indicator
-##   - If there's a winner or a tie, ends the game
-func take_turn(event: InputEvent) -> void:
-	var grid_pos: Vector2i = gameGraphics.get_grid_position(event.position)
-	
+func take_turn(grid_pos: Vector2i) -> void:
 	var grid_data: Array = gameLogic.grid_data
 	
 	if grid_data[grid_pos.y][grid_pos.x] == Constants.EMPTY_CELL:
@@ -82,12 +80,58 @@ func take_turn(event: InputEvent) -> void:
 		var winner: int = gameLogic.get_winner()
 		if winner || num_moves == 9:
 			end_game(winner)
+			
+	print(grid_data)
 
+## Implements one turn of the game.
+## Given a user click
+##   - Updates the underlying grid data
+##   - places a marker at the correct screen location and updates current player indicator
+##   - If there's a winner or a tie, ends the game
+func take_human_turn(event: InputEvent) -> void:
+	print("Human turn")	
+	
+	var grid_pos: Vector2i = gameGraphics.get_grid_position(event.position)
+	print("Human Move:", grid_pos)
+	
+	take_turn(grid_pos)
+	print()
+
+func is_valid_click(event: InputEvent) -> bool:
+	if is_human_turn && is_mouse_click_left(event) && gameGraphics.is_event_in_board(event):
+		return true
+	return false
+
+func take_computer_turn() -> void:
+	print("Computer turn:")
+	
+	var comp_move: Vector2i = gameLogic.get_computer_move()
+	print("Comp Move: ", comp_move)
+	
+	take_turn(comp_move)
+	print()
+
+# user clicks
+#   if is valid click
+#     proccess human turn
+#
+#     if opponent is computer, take computer turn
+#     else if opponent is human, wait for next click
 func _input(event: InputEvent) -> void:
-	if is_mouse_click_left(event):
-		if gameGraphics.is_event_in_board(event):
-			take_turn(event)
+	if is_valid_click(event):
+		is_human_turn = false
+		take_human_turn(event)
+		
+		if opponent == Constants.OPPONENT_COMPUTER:
+			# TODO wait briefly (maybe this should be in computer turn function)
+			take_computer_turn()
+			
+		is_human_turn = true
 
-## TODO: Should be able to drop this now, and just put the signal on new_game()
 func _on_game_over_menu_restart() -> void:
+	new_game()
+
+func _on_opponent_selector_item_selected(index: int) -> void:
+	opponent = index
+	
 	new_game()

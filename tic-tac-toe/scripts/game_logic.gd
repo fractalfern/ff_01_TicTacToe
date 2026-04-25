@@ -44,3 +44,26 @@ func get_winner() -> int:
 		return Constants.PLAYER_CROSS
 
 	return 0
+
+func get_computer_move() -> Vector2i:
+	# get a valid empty cell.
+	# lots of ways to do this
+	#   first available
+	#   random
+	#   best move
+	var comp_move: Vector2i
+	
+	for row: int in range(3):
+		for col: int in range(3):
+			print("Row: ", row)
+			print("Col: ", col)
+			print("Value:", grid_data[row][col])
+			
+			if grid_data[row][col] == Constants.EMPTY_CELL:
+				#I'm too tired to figure out why col, row are backward here but I debugged to 
+				#figure it out. I remember y,x being backward in code I basically copied from
+				#the tutorial
+				comp_move = Vector2i(col, row) 
+				return comp_move
+	
+	return comp_move

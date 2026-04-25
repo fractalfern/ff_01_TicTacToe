@@ -51,6 +51,14 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1bvp3")
 
+[node name="OpponentLabel" type="Label" parent="GameGraphics" unique_id=2140416274]
+offset_left = 633.0
+offset_top = 376.0
+offset_right = 757.0
+offset_bottom = 410.0
+theme_override_font_sizes/font_size = 24
+text = "Opponent:"
+
 [node name="PlayerLabel" type="Label" parent="GameGraphics" unique_id=89895303]
 offset_left = 600.0
 offset_top = 50.0
@@ -68,7 +76,21 @@ offset_right = 850.0
 offset_bottom = 325.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_lquwl")
 
+[node name="OpponentSelector" type="OptionButton" parent="GameGraphics" unique_id=1140072790]
+offset_left = 632.0
+offset_top = 412.0
+offset_right = 875.0
+offset_bottom = 454.0
+theme_override_font_sizes/font_size = 24
+selected = 0
+item_count = 2
+popup/item_0/text = "Human"
+popup/item_0/id = 0
+popup/item_1/text = "Computer"
+popup/item_1/id = 1
+
 [node name="GameOverMenu" parent="." unique_id=923343578 instance=ExtResource("5_lquwl")]
 process_mode = 2
 
+[connection signal="item_selected" from="GameGraphics/OpponentSelector" to="." method="_on_opponent_selector_item_selected"]
 [connection signal="restart" from="GameOverMenu" to="." method="_on_game_over_menu_restart"]
