@@ -36,18 +36,23 @@ func create_marker(player: int, position: Vector2i) -> Node:
 	
 	return marker
 
+## Determines which cell (x,y) of the tic-tac-toe grid, the provided position 
+## is at.
 func get_grid_position(mouse_position: Vector2) -> Vector2i:
 	return Vector2i(mouse_position / cell_size)
 
+## Returns true if event happens within the bounds of the board grid
+## False otherwise
 func is_event_in_board(event: InputEvent) -> bool:
 	if event.position.x < board_size:
 		return true
 	
 	return false
 
+## Given a cell (x,y), return back the screen position where the marker should
+## be placed
 func get_game_marker_position(position: Vector2i) -> Vector2i:
 	@warning_ignore("integer_division")
 	var pos_calc: Vector2i = position * cell_size + cell_size_offset
-	print(pos_calc)
 	
 	return pos_calc
