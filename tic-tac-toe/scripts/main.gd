@@ -88,17 +88,16 @@ func take_turn(grid_pos: Vector2i) -> void:
 ##   - Updates the underlying grid data
 ##   - places a marker at the correct screen location and updates current player indicator
 ##   - If there's a winner or a tie, ends the game
-func take_human_turn(event: InputEvent) -> void:
+func take_human_turn(grid_pos: Vector2i) -> void:
 	print("Human turn")	
-	
-	var grid_pos: Vector2i = gameGraphics.get_grid_position(event.position)
-	print("Human Move:", grid_pos)
-	
+		
 	take_turn(grid_pos)
 	print()
 
 func is_valid_click(event: InputEvent) -> bool:
-	if is_human_turn && is_mouse_click_left(event) && gameGraphics.is_event_in_board(event):
+	if is_human_turn && \
+	   is_mouse_click_left(event) && \
+	   gameGraphics.is_event_in_board(event):
 		return true
 	return false
 
@@ -119,14 +118,16 @@ func take_computer_turn() -> void:
 #     else if opponent is human, wait for next click
 func _input(event: InputEvent) -> void:
 	if is_valid_click(event):
-		is_human_turn = false
-		take_human_turn(event)
-		
-		if opponent == Constants.OPPONENT_COMPUTER:
-			# TODO wait briefly (maybe this should be in computer turn function)
-			take_computer_turn()
+		var grid_pos: Vector2i = gameGraphics.get_grid_position(event.position)
+		if gameLogic.grid_data[grid_pos.y][grid_pos.x] == Constants.EMPTY_CELL:
+			is_human_turn = false
+			take_human_turn(grid_pos)
 			
-		is_human_turn = true
+			if opponent == Constants.OPPONENT_COMPUTER:
+				# TODO wait briefly (maybe this should be in computer turn function)
+				take_computer_turn()
+				
+			is_human_turn = true
 
 func _on_game_over_menu_restart() -> void:
 	new_game()
