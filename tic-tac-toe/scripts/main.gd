@@ -10,8 +10,10 @@ var num_moves: int
 
 var opponent: int = Constants.OPPONENT_HUMAN
 var is_human_turn: bool = false
+var is_game_over: bool = false
 
 func new_game() -> void:	
+	is_game_over = false
 	is_human_turn = false
 	gameLogic.new_game()
 	is_human_turn = true
@@ -48,6 +50,7 @@ func next_player() -> void:
 		current_player = Constants.PLAYER_CROSS
 
 func end_game(winner: int) -> void:
+	is_game_over = true
 	get_tree().paused = true
 	gameOverMenu.show()
 	
@@ -123,7 +126,7 @@ func _input(event: InputEvent) -> void:
 			is_human_turn = false
 			take_human_turn(grid_pos)
 			
-			if opponent == Constants.OPPONENT_COMPUTER:
+			if opponent == Constants.OPPONENT_COMPUTER && !is_game_over:
 				# TODO wait briefly (maybe this should be in computer turn function)
 				take_computer_turn()
 				
